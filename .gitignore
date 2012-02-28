@@ -23,4 +23,5 @@ vendor
 *.gem
 
 ## PROJECT::SPECIFIC
-cache/compile/*.php
+cache/compiled/*.php
+config.php

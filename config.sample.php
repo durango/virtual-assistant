@@ -18,12 +18,12 @@ class Config {
       $this->config['smarty_compile_directory']  = __DIR__.'/cache/compiled';
 
       // Setup LDAP variables
-      $this->config['ldap_host'] = 'ldap://danieldurante.com';
+      $this->config['ldap_host'] = 'ldap://domain.com';
 
       // Setup MySQL variables
       $this->config['mysql_host']     = 'localhost';
       $this->config['mysql_username'] = 'root';
-      $this->config['mysql_password'] = 'root1212';
-      $this->config['mysql_database'] = 'assistant';
+      $this->config['mysql_password'] = '';
+      $this->config['mysql_database'] = '';
   }
 }
