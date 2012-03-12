@@ -146,7 +146,7 @@ class MySQL
 
     /**
      * Logs any successful messages sent
-     * @param $guestName Guest's name
+     * @param string $guestName    Guest's name
      * @param string $employeeName Employee's name
      * @param string $topic        Message
      *

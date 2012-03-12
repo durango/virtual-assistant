@@ -154,7 +154,7 @@ class LDAP
 
     /**
      * Empty log function for Factory
-     * @param $guestName Guest's name
+     * @param string $guestName    Guest's name
      * @param string $employeeName Employee's name
      * @param string $topic        Message
      *

@@ -289,7 +289,7 @@ class XMPP
      */
     protected function authBind()
     {
-        $this->send('<iq type="set" id="3"><bind xmlns="urn:ietf:params:xml:ns:xmpp-bind"><resource>bot</resource></bind></iq>');
+        $this->send('<iq type="set" id="bind-1"><bind xmlns="urn:ietf:params:xml:ns:xmpp-bind"><resource>bot</resource></bind></iq>');
     }
 
     // }}}
@@ -305,7 +305,7 @@ class XMPP
      */
     protected function authSession()
     {
-        $this->send('<iq type="set" id="4"><session xmlns="urn:ietf:params:xml:ns:xmpp-session"/></iq>');
+        $this->send('<iq type="set" id="session-1"><session xmlns="urn:ietf:params:xml:ns:xmpp-session"/></iq>');
     }
 
     // }}}
@@ -337,7 +337,7 @@ class XMPP
      */
     protected function whosOnline()
     {
-        $this->send('<iq to="'.$this->host.'" type="get" id="234"><query xmlns=\'http://jabber.org/protocol/disco#items\' node="online users"/></iq>');
+        $this->send('<iq to="'.$this->host.'" type="get" id="disco-items-1"><query xmlns=\'http://jabber.org/protocol/disco#items\' node="online users"/></iq>');
     }
 
     // }}}

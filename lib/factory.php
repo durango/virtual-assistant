@@ -185,6 +185,23 @@ class Factory extends Config
     }
 
     // }}}
+
+    // {{{ log()
+
+    /**
+     * Logs any successful messages sent
+     * @param string $guestName    Guest's name
+     * @param string $employeeName Employee's name
+     * @param string $topic        Message
+     *
+     * @return void
+     */
+    public function log($guestName, $employeeName, $topic)
+    {
+        $this->factory->log($guestName, $employeeName, $topic);
+    }
+
+    // }}}
 }
 
 // }}}
