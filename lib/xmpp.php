@@ -433,10 +433,10 @@ class XMPP
                 stream_set_blocking($this->stream, $this->streamBlocking);
                 stream_set_timeout($this->stream, $this->streamTimeout);
             } else {
-                $this->log(sprintf("Socket could not be opened for XMPP host %s:%s", $this->host, $this->port));
+                $this->log("Socket could not be opened for XMPP host {$this->host}:{$this->port}");
             }
         } else {
-            $this->log(sprintf("Socket already opened for xmpp host %s:%s", $this->host, $this->port));
+            $this->log("Socket already opened for xmpp host {$this->host}:{$this->port}");
         }
 
         $this->run('connect');
@@ -570,7 +570,7 @@ class XMPP
         $data = trim(str_replace("<?xml version='1.0'?>", '', $data));
         if (strlen($data) > 0) {
             $this->ticks = 0;
-            $this->log(sprintf("Got %s", $data));
+            $this->log("Got {$data}");
             $this->run('data', $data);
 
             $this->parse($data);
@@ -590,7 +590,7 @@ class XMPP
     /**
      * Sends data to the socket.
      *
-     * @return bool
+     * @return bool|int
      *
      * @access public
      */
@@ -598,13 +598,13 @@ class XMPP
     {
         if ($this->stream) {
             if (($return = fwrite($this->stream, $data)) !== false) {
-                $this->log(sprintf("Sent Success: %s", $data));
+                $this->log("Sent Success: {$data}");
             } else {
-                $this->log(sprintf("Sent Failed: %s", $data));
+                $this->log("Sent Failed: {$data}");
             }
             return $return;
         } else {
-            $this->log(sprintf("Send failed, socket not connected: %s", $data));
+            $this->log("Send failed, socket not connected: {$data}");
             return false;
         }
     }
@@ -659,12 +659,12 @@ class XMPP
      * @param string $hook   The hook's name
      * @param string $params Send any arguments to the callback
      *
-     * @return mixed|null
+     * @return mixed|bool
      *
      * @access public
      */
     public function run($hook, $params = null) {
-        $data = null;
+        $data = false;
         if (isset($this->hooks[$hook]) && count($this->hooks[$hook]) > 0) {
             foreach ($this->hooks[$hook] as $callback) {
                 $data = call_user_func($callback, $params);
@@ -680,13 +680,12 @@ class XMPP
     /**
      * Starts the XMPP stream
      *
-     * @return mixed
+     * @return bool|int
      *
      * @access public
      */
     public function streamStart() {
-        $xml = sprintf('<stream:stream xmlns:stream="http://etherx.jabber.org/streams" version="1.0" xmlns="jabber:client" to="%s">', $this->host);
-        return $this->send($xml);
+        return $this->send("<stream:stream xmlns:stream=\"http://etherx.jabber.org/streams\" version=\"1.0\" xmlns=\"jabber:client\" to=\"{$this->host}\">");
     }
 
     // }}}
@@ -696,7 +695,7 @@ class XMPP
     /**
      * Stops the XMPP stream
      *
-     * @return mixed
+     * @return bool|int
      *
      * @access public
      */
