@@ -17,8 +17,8 @@
  * the PHP License and are unable to obtain it through the web, please
  * send a note to license@php.net so we can mail you a copy immediately.
  *
- * @category   LDAP
- * @package    LDAP
+ * @category   MySQL
+ * @package    MySQL
  * @author     Daniel Durante <officedebo@gmail.com>
  * @copyright  None (see license)
  * @license    http://www.opensource.org/licenses/mit-license.php  MIT License
@@ -84,6 +84,11 @@ class MySQL
      */
     public function close()
     {
+        // Free up the resource
+        if ($this->query) {
+          $this->query->close();
+        }
+
         return $this->conn->close();
     }
 
@@ -112,27 +117,49 @@ class MySQL
     // {{{ entries()
 
     /**
-     * Retrieves entries within LDAP
+     * Retrieves entries within MySQL
      *
-     * @param string $search_resource The search resource
+     * @param string $search_resource The search resource, used for LDAP
      *
-     * @return array The LDAP entries
+     * @return array The MySQL entries
      * @access public
      */
-    function entries($search_resource)
+    function entries($search_resource = array())
     {
         // Store the values into an array, clear, then return
         $array = array();
-        while ($row = $this->query->fetch_object())
+        while ($row = $this->query->fetch_array())
         {
             $array[] = $row;
         }
 
-        // Free up the resource
-        $this->query->close();
-        $this->conn->next_result();
+        if ($this->conn->more_results()) {
+          $this->conn->next_result();
+        }
 
         return $array;
+    }
+
+    // }}}
+
+    // {{{ log()
+
+    /**
+     * Logs any successful messages sent
+     * @param $guestName Guest's name
+     * @param string $employeeName Employee's name
+     * @param string $topic        Message
+     *
+     * @return void
+     */
+    public function log($guestName, $employeeName, $topic)
+    {
+        $query = sprintf("INSERT INTO logs (guestName, employeeName, topic, date_created) 
+                                VALUES ('%s', '%s', '%s', NOW())",
+                                $this->conn->real_escape_string($guestName),
+                                $this->conn->real_escape_string($employeeName),
+                                $this->conn->real_escape_string($topic));
+        $this->conn->query($query);
     }
 
     // }}}

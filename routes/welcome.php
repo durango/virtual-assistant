@@ -6,5 +6,7 @@ if (empty($name)) {
     $this->redirect('/');
 }
 
-$this->smarty->assign('guestName', $name);
+$this->factory->search('SELECT id, name, email, jabber_id FROM users ORDER BY name');
+$this->smarty->assign( 'guestName', $name);
+$this->smarty->assign( 'employees', $this->factory->entries());
 $this->smarty->display('welcome.tpl');

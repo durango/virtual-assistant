@@ -25,7 +25,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php  MIT License
  * @version    1.0
  */
-class Factory
+class Factory extends Config
 {
     // {{{ properties
 
@@ -65,6 +65,13 @@ class Factory
      */
     var $database = '';
 
+    /**
+     * The factory instance.
+     *
+     * @var Factory
+     */
+    var $factory;
+
     // }}}
 
     // {{{ __construct()
@@ -83,23 +90,35 @@ class Factory
      */
     function __construct($data_type)
     {
-        swtich (strtolower($data_type)) {
+        parent::__construct();
+
+        switch (strtolower($data_type)) {
         case 'mysql':
             // Include the MySQL factory
             require_once dirname(__FILE__).'/mysql.php';
-            $this->conn = new MySQL();
+
+            // Add username, password, etc. from config
+            $this->host     = $this->config['mysql_host'];
+            $this->username = $this->config['mysql_username'];
+            $this->password = $this->config['mysql_password'];
+            $this->database = $this->config['mysql_database'];
+            $this->factory  = new MySQL();
             break;
 
         case 'ldap':
             // Include the LDAP factory
             require_once dirname(__FILE__).'/ldap.php';
-            $this->conn = new LDAP();
+
+            // Add LDAP host
+            $this->host    = $this->config['ldap_host'];
+
+            $this->factory = new LDAP();
             break;
 
         case 'plain':
             // Include the plain factory
             require_once dirname(__FILE__).'/plain.php';
-            $this->conn = new Plain();
+            $this->factory = new Plain();
             break;
 
         default:
@@ -108,6 +127,9 @@ class Factory
             );
             break;
         }
+
+        // Connect to our database
+        $this->factory->connect($this->host, $this->username, $this->password, $this->database);
     }
 
     // }}}
@@ -122,12 +144,12 @@ class Factory
      */
     public function connect()
     {
-        $this->conn->connect($this->host, $this->username, $this->password, $this->database);
+        $this->factory->connect($this->host, $this->username, $this->password, $this->database);
     }
 
     // }}}
 
-    // {{{ select()
+    // {{{ search()
 
     /**
      * Searches within the Factory adapter
@@ -139,9 +161,9 @@ class Factory
      * @return resource|array The resource/array given from the adapter.
      * @access public
      */
-    public function select($query, $filter = '', $reduce = '')
+    public function search($query, $filter = '', $reduce = '')
     {
-      return $this->conn->select($query, $filter, $reduce);
+      return $this->factory->search($query, $filter, $reduce);
     }
 
     // }}}
@@ -157,9 +179,9 @@ class Factory
      * @return array The array given back from the search criteria.
      * @access public
      */
-    public function entries($search_resource)
+    public function entries($search_resource = array())
     {
-        return $this->conn->entries($search_resource);
+        return $this->factory->entries($search_resource);
     }
 
     // }}}

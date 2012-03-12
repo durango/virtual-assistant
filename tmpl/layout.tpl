@@ -11,10 +11,14 @@
     <link href="static/bootstrap.min.css" rel="stylesheet">
     <link href="static/style.css" rel="stylesheet">
     <link href="static/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="static/ui.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
+    <script src="static/jquery.js"></script>
+    <script src="static/ui.js"></script>
   </head>
 
   <body>
@@ -34,7 +38,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div id="container" class="container">
       {if $smarty.session.rack.error ne ""}
         <div class="alert alert-error">
           {$smarty.session.rack.error}
@@ -49,8 +53,8 @@
       </footer>
 
     </div> <!-- /container -->
-    <script src="static/jquery.js"></script>
     <script src="static/bootstrap-modal.js"></script>
     <script src="static/bootstrap-typeahead.js"></script>
+    <script src="static/generic.js"></script>
   </body>
 </html>

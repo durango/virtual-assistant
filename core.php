@@ -1,4 +1,28 @@
 <?php
+
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
+/**
+ * Core class for Virtual-Assistant web application.
+ *
+ * Core class for Virtual-Assistant web application.
+ *
+ * PHP version 5
+ *
+ * LICENSE: This source file is subject to version 3.01 of the PHP license
+ * that is available through the world-wide-web at the following URI:
+ * http://www.php.net/license/3_01.txt.  If you did not receive a copy of
+ * the PHP License and are unable to obtain it through the web, please
+ * send a note to license@php.net so we can mail you a copy immediately.
+ *
+ * @category   Core
+ * @package    Core
+ * @author     Daniel Durante <officedebo@gmail.com>
+ * @copyright  None (see license)
+ * @license    http://www.opensource.org/licenses/mit-license.php  MIT License
+ * @version    1.0
+ */
+ 
 // PEAR standard
 error_reporting(E_ALL | E_STRICT);
 
@@ -8,12 +32,37 @@ require_once __DIR__.'/config.php';
 // Load Smarty
 require_once __DIR__.'/lib/Smarty/Smarty.class.php';
 
-class Core extends Config {
-    // Setup the main variables...
-    public $routes;
+// Load custom exceptions
+require_once __DIR__.'/lib/exceptions.php';
+
+// {{{ Core
+
+class Core extends Config
+{
+    // {{{ Properties
+
+    /**
+     * Store the Smarty resource into a variable.
+     *
+     * @var resource
+     */
     public $smarty;
-    // Set a default index page...
-    public $default_index = 'index';
+
+    /**
+     * Store the factory into a variable.
+     *
+     * @var class
+     */
+    public $factory;
+
+    /**
+     * Store the XMPP class into a variable.
+     *
+     * @var class
+     */
+    public $xmpp;
+
+    // }}}
 
     /**
      * Initializes the Core class
@@ -23,19 +72,19 @@ class Core extends Config {
      */
     function __construct()
     {
-        // Start the session
         session_start();
 
         // Grab the config's options
         parent::__construct();
 
-        // DRY: Directory where the main files are (controllers)
-        $this->routes = __DIR__.'/routes/';
-
         // Set the default path if it doesn't exist
         if (empty($_GET['path'])) {
-            $_GET['path'] = $this->default_index;
+            $_GET['path'] = $this->config['default_index'];
         }
+
+        // Initialize the Factory
+        require_once __DIR__.'/lib/factory.php';
+        $this->factory = new Factory($this->config['use_schema']);
 
         // Initialize Smarty
         $this->smarty = new Smarty();
@@ -55,8 +104,8 @@ class Core extends Config {
             $_SESSION['rack'][$storage] = '';
 
             if (!empty($_SESSION['x.rack'][$storage])) {
-              $_SESSION['rack'][$storage]   = $_SESSION['x.rack'][$storage];
-              $_SESSION['x.rack'][$storage] = '';
+                $_SESSION['rack'][$storage]   = $_SESSION['x.rack'][$storage];
+                $_SESSION['x.rack'][$storage] = '';
             }
         }
     }
@@ -89,7 +138,7 @@ class Core extends Config {
     public function redirect($url, $perm)
     {
         if ($perm === true) {
-          header("HTTP/1.1 301 Moved Permanently");
+            header("HTTP/1.1 301 Moved Permanently");
         }
 
         header("Location:{$url}");
@@ -106,11 +155,19 @@ class Core extends Config {
     {
       switch (strtolower($_GET['path'])) {
       case 'welcome':
-          require_once $this->routes.'welcome.php';
+          require_once $this->config['routes'].'welcome.php';
+          break;
+
+      case 'more':
+          require_once $this->config['routes'].'more.php';
+          break;
+
+      case 'send':
+          require_once $this->config['routes'].'send.php';
           break;
 
       default:
-          require_once $this->routes.'index.php';
+          require_once $this->config['routes'].'index.php';
           break;
       }
 
@@ -122,3 +179,5 @@ class Core extends Config {
       }
     }
 }
+
+// }}}

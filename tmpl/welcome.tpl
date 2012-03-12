@@ -3,16 +3,17 @@
 {block name="content"}
 "Nice to meet you {$guestName|escape}!<br>
 Who are you here to see?"<br><br>
-<form class="form-horizontal" method="post" action="/?path=welcome">
+<form class="form-horizontal" method="post" action="/?path=more">
+  <input type="hidden" name="guestName" value="{$guestName|escape}">
   <fieldset>
     <legend>Employee Directory</legend>
     <div class="control-group">
       <label class="control-label" for="employee">Employee:</label>
       <div class="controls">
         <select name="employee" id="employee">
-          <option value="1">Daniel Durante</option>
-          <option value="2">Paulo Da Silva</option>
-          <option value="3">Pavle Stojkovic</option>
+          {foreach from=$employees key=k item=employee}
+            <option value="{$employee.id}">{$employee.name|escape}</option>
+          {/foreach}
         </select>
       </div>
     </div>

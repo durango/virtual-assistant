@@ -4,7 +4,7 @@
 "Hello, I'm Pickle. Welcome to Grooveshark!
 <br>
 What is your name?"<br><br>
-<form class="form-horizontal" method="post" action="/?path=welcome">
+<form id="whoareyou" class="form-horizontal" method="post" action="/?path=welcome">
   <fieldset>
     <legend>Virtual Assistant</legend>
     <div class="control-group">

@@ -108,10 +108,10 @@ class LDAP
      * @param string $filter The search filter can be simple or advanced,
                              using boolean operators in the format described
                              in the LDAP documentation
-     * @param array $reduce An array of the required attributes, e.g.
-                            array("mail", "sn", "cn"). Note that the "dn"
-                            is always returned irrespective of which attributes
-                            types are requested
+     * @param array $reduce  An array of the required attributes, e.g.
+                             array("mail", "sn", "cn"). Note that the "dn"
+                             is always returned irrespective of which attributes
+                             types are requested
      *
      * @return array The LDAP search resource
      * @access public
@@ -135,7 +135,33 @@ class LDAP
      */
     function entries($search_resource)
     {
-        return ldap_get_entries($this->conn, $search);
+        $info = ldap_get_entries($this->conn, $search);
+        // Store the results in an array and change the keynames to reflect mysql.
+        $array = array();
+        for ($i=0; $i < $info['count']; $i++)
+        {
+            $array[$i]['id']    = $info[$i]['cn'][0];
+            $array[$i]['name']  = $info[$i]['cn'][0];
+            $array[$i]['email'] = $info[$i]['mail'][0];
+        }
+
+        return $array;
+    }
+
+    // }}}
+
+    // {{{ log()
+
+    /**
+     * Empty log function for Factory
+     * @param $guestName Guest's name
+     * @param string $employeeName Employee's name
+     * @param string $topic        Message
+     *
+     * @return void
+     */
+    public function log($guestName, $employeeName, $topic)
+    {
     }
 
     // }}}
