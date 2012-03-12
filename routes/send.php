@@ -41,6 +41,8 @@ function send_messages($xmpp) {
 
 $bot->start();
 
+$this->factory->log($name, $employee['name'], $message);
+
 $this->smarty->assign('employeeName', $employee['name']);
 
 $this->smarty->display('send.tpl');
